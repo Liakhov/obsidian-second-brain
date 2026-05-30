@@ -14,7 +14,7 @@ Decisions about the vault itself.
 - [[meta/0001-agents-as-single-source]] — single schema file; CLAUDE.md is a symlink.   Updated: 2026-05-27
 - [[meta/0002-history-md-procedural-memory]] — lightweight procedural memory layer.   Updated: 2026-05-27
 - [[meta/0003-tasks-centralized]] — tasks in markdown files, not inline-and-aggregated.   Updated: 2026-05-27
-- [[meta/0004-web-clipper-to-raw-directly]] — Web Clipper writes to `raw/<topic>/`, not to an inbox staging area.   Updated: 2026-05-27
+- [[meta/0004-web-clipper-to-raw-directly]] — `raw/` is flat; Web Clipper writes there directly. `raw/assets/` for images.
 
 ## Registries
 

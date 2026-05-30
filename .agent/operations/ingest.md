@@ -9,7 +9,7 @@ Compile a source from `raw/` into wiki pages.
 
 Before writing any file, show a plan that includes:
 
-- **Source path** — exact `raw/<topic>/<file>.md`
+- **Source path** — exact `raw/<file>.md`
 - **New pages** — list of paths to be created (or "none")
 - **Updated pages** — list of paths to be modified (or "none")
 - **Cross-reference count** — N new `[[wikilinks]]`
@@ -25,14 +25,22 @@ Stop and re-read.
 ## Steps after confirmation
 
 ### 1. Read source
-Open the file at `raw/<topic>/<file>.md`. Parse frontmatter (title,
+Open the file at `raw/<file>.md`. Parse frontmatter (title,
 source URL, author, published date). If frontmatter is missing or
 incomplete, use file name as title and note the gap; don't fail.
 
 ### 2. Determine topic
-- If file lives in `raw/<topic>/`, that's the topic.
-- If file is at `raw/` root (rare), propose a topic from content
-  and confirm with user before proceeding.
+All raw files live at `raw/` root. Determine
+the topic from the source's content: frontmatter `tags`, title, and
+body. Cross-check against existing `wiki/<topic>/` subdirs to prefer
+an existing topic over a new one.
+
+- If one topic is obvious and matches an existing `wiki/<topic>/` —
+  use it; no need to ask.
+- If the source spans 2-3 topics — propose primary + secondary, ask
+  user to confirm primary placement.
+- If a brand-new topic would be created — propose name and confirm
+  before creating `wiki/<topic>/`.
 
 ### 3. Read article template
 Read `.agent/references/article-template.md` to know the exact
@@ -94,7 +102,7 @@ Append to `wiki/log.md`:
 
 ```
 ## [YYYY-MM-DD] ingest | <primary article title>
-- Source: raw/<topic>/<file>.md
+- Source: raw/<file>.md
 - Created: <new article paths or omit line>
 - Updated: <updated article paths or omit line>
 ```

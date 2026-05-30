@@ -27,7 +27,7 @@ bookkeeping that humans abandon.
 ├── tasks.md           global TODO
 ├── inbox/             quick captures (future skill: Telegram, voice)
 ├── projects/          active projects (PARA-style)
-├── raw/               immutable source material (Web Clipper sink)
+├── raw/               immutable source material, flat (Web Clipper sink)
 ├── wiki/              distilled knowledge (agent writes, you read)
 │   ├── index.md       map
 │   ├── log.md         operations log
@@ -64,10 +64,12 @@ Open the folder in Obsidian (Open folder as vault).
 
 ### 3. Configure Web Clipper
 
-- Destination: this vault.
-- Folder: `raw/<topic>/`. Web Clipper writes directly here
-  (see [ADR-0004](wiki/meta/0004-web-clipper-to-raw-directly.md)).
-- Frontmatter template (minimum):
+In the browser extension settings (template / behavior):
+
+- **Destination**: this vault.
+- **Note location**: `raw`.
+- **File name**: `{{date}}-{{title|safe_name}}`.
+- **Frontmatter template** (minimum):
   ```
   title, source, author, published, created, tags: [clippings]
   ```
@@ -83,7 +85,7 @@ claude        # or: codex / cursor / opencode
 The agent reads `AGENTS.md` on session start and discovers the
 operations table. First useful commands:
 
-- `"Ingest raw/<topic>/<file>"` — distill a source into wiki pages.
+- `"Ingest raw/<file>"` — distill a source into wiki pages.
 - `"What do I know about X?"` — query with citations.
 - `"Lint vault"` — run health check.
 - `"Document this decision as an ADR"` — record a vault or
@@ -93,7 +95,7 @@ operations table. First useful commands:
 
 | When | What | How |
 |---|---|---|
-| Reading something interesting | Clip it | Web Clipper → `raw/<topic>/` |
+| Reading something interesting | Clip it | Web Clipper → `raw/` |
 | Once a day or week | Ingest new sources | "ingest all new sources" |
 | Anytime | Ask the wiki | "what do I know about X" |
 | Once a month | Vault health | "lint vault" |

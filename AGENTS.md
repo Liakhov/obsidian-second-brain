@@ -37,14 +37,14 @@ The agent never edits `raw/`.
 │   └── <slug>/
 │
 ├── raw/                    immutable source material
-│   └── <topic>/
-│       └── YYYY-MM-DD-slug.md
+│   ├── YYYY-MM-DD-slug.md
+│   └── assets/             image attachments
 │
 ├── wiki/                   distilled knowledge
 │   ├── index.md            map of the wiki
 │   ├── log.md              append-only operations log (wiki only)
 │   ├── history.md          agent's procedural memory (corrections)
-│   ├── <topic>/            mirrors raw/<topic>/
+│   ├── <topic>/            distilled knowledge clustered by topic
 │   └── meta/               ADRs about the vault itself
 │
 ├── archive/                completed / stale content
@@ -64,7 +64,8 @@ The agent never edits `raw/`.
 
 | What | Path |
 |---|---|
-| Web-clip article | `raw/<topic>/YYYY-MM-DD-slug.md` |
+| Web-clip article | `raw/YYYY-MM-DD-slug.md` |
+| Image attachment | `raw/assets/<image>.<ext>` |
 | Distilled knowledge from a source | `wiki/<topic>/<article>.md` |
 | Quick thought / idea (future) | `inbox/` |
 | Active project | `projects/<slug>/` |

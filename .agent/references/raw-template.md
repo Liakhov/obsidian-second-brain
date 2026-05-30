@@ -1,7 +1,7 @@
 # Raw source template
 
-This is the exact format for files in `raw/<topic>/`. Used when
-manually saving a source or when Web Clipper drops a file.
+This is the exact format for files in `raw/`. Used when manually saving a source or
+when Web Clipper drops a file.
 
 ## File naming
 

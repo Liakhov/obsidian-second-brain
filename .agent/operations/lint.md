@@ -31,8 +31,6 @@ Then: "Proceed?"
     - Stale pages (`last_verified` older than threshold)
     - Pages without sources
     - Orphan pages (no inbound links — except in `IGNORE_PAGES` list)
-    - Links to `raw/inbox/` (should not exist; this is a bug
-      placeholder if/when inbox is introduced)
 
 3. **Auto-fix where safe.** For each finding:
 

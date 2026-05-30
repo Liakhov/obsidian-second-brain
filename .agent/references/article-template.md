@@ -29,7 +29,7 @@ tags:
 sources:
   - "<Author or org> (YYYY-MM-DD)"
 raw:
-  - "[<source-filename>](../../raw/<topic>/<file>.md)"
+  - "[<source-filename>](../../raw/<file>.md)"
 relationships:
   implements: []
   supports: []
@@ -58,9 +58,8 @@ Field semantics:
 - **sources** — human-readable list. Format: "Author or org (date)".
   One per line.
 - **raw** — markdown links to `raw/` files. Relative from the
-  article's location: `../../raw/<topic>/<file>.md` if article is
-  at `wiki/<topic>/`. Semicolon-separated if multiple on one line,
-  or one per yaml list item.
+  article's location: `../../raw/<file>.md` if article is at
+  `wiki/<topic>/`. One per yaml list item.
 - **relationships** — optional typed links. Can be omitted on
   early articles; add as the base grows.
 
@@ -95,8 +94,8 @@ provenance.
 
 ## Sources
 
-- [<source-filename>](../../raw/<topic>/<file>.md) — what this source contributed
-- [<another-file>](../../raw/<topic>/<file2>.md) — what this source contributed
+- [<source-filename>](../../raw/<file>.md) — what this source contributed
+- [<another-file>](../../raw/<file2>.md) — what this source contributed
 ```
 
 ## Rules

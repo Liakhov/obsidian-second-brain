@@ -14,6 +14,7 @@ Before writing any file, show a plan that includes:
 - **Updated pages** — list of paths to be modified (or "none")
 - **Cross-reference count** — N new `[[wikilinks]]`
 - **Index update note** — what changes in `wiki/index.md`
+- **Source Notes entry preview** — the entry going into `wiki/Source Notes.md` (status, confidence, derived pages)
 - **Log entry preview** — the line going into `wiki/log.md`
 
 Then: "Proceed?"
@@ -45,7 +46,8 @@ article format. Use that format for any new pages.
 ### 5. Extract key concepts
 From the source, extract 3-15 key ideas / entities / facts. More
 than ~15 makes pages unfocused. Fewer than 3 means the source
-isn't worth a wiki page yet — just save as a source note.
+isn't worth a wiki page yet — still add it to `wiki/Source Notes.md`
+(step 11), but skip steps 6–9.
 
 ### 6. Decide page placement per concept
 
@@ -97,6 +99,18 @@ Append to `wiki/log.md`:
 - Updated: <updated article paths or omit line>
 ```
 
+### 11. Update Source Notes
+Append an entry to `wiki/Source Notes.md` under `## Entries`,
+using the template documented at the top of that file. Required
+fields: File link to `raw/`, URL (if present), Author, Published,
+Ingested (today), Status (`active`), Confidence, Key terms,
+3–5 line summary, Derived pages (links to the articles created
+or updated in steps 6–9; "none" if step 5 produced too few concepts).
+
+Re-ingest of an existing source: update the existing entry in place
+(refresh `Ingested` date, add new derived pages, bump status if
+needed). Do not create a duplicate entry.
+
 ## Edge cases
 
 **Source already ingested.** If `wiki/log.md` already has an
@@ -129,12 +143,14 @@ preserved in original. Ask user only if unclear.
 - [ ] Are all new/updated files actually written?
 - [ ] Is `wiki/index.md` updated?
 - [ ] Is `wiki/log.md` updated with the standard format?
+- [ ] Is `wiki/Source Notes.md` updated with an entry for this source?
 - [ ] Did cascade updates touch every materially affected page?
 
 ## Files
 
 **Reads:** source file in `raw/`, `wiki/index.md`, last entries
-of `wiki/log.md`, target wiki articles, `.agent/references/article-template.md`.
+of `wiki/log.md`, `wiki/Source Notes.md` (to check for existing
+entry), target wiki articles, `.agent/references/article-template.md`.
 
 **Writes:** new/updated `wiki/<topic>/*.md`, `wiki/index.md`,
-`wiki/log.md`.
+`wiki/log.md`, `wiki/Source Notes.md`.

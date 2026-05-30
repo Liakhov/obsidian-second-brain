@@ -32,6 +32,8 @@ bookkeeping that humans abandon.
 │   ├── index.md       map
 │   ├── log.md         operations log
 │   ├── history.md     agent's procedural memory
+│   ├── Source Notes.md  registry of ingested sources from raw/
+│   ├── <topic>/       distilled knowledge clustered by topic
 │   └── meta/          ADRs about the vault itself
 ├── archive/           completed projects, stale content
 ├── .agent/            machinery

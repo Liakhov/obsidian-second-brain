@@ -44,6 +44,7 @@ The agent never edits `raw/`.
 │   ├── index.md            map of the wiki
 │   ├── log.md              append-only operations log (wiki only)
 │   ├── history.md          agent's procedural memory (corrections)
+│   ├── Source Notes.md     registry of ingested sources from raw/
 │   ├── <topic>/            distilled knowledge clustered by topic
 │   └── meta/               ADRs about the vault itself
 │
@@ -67,6 +68,7 @@ The agent never edits `raw/`.
 | Web-clip article | `raw/YYYY-MM-DD-slug.md` |
 | Image attachment | `raw/assets/<image>.<ext>` |
 | Distilled knowledge from a source | `wiki/<topic>/<article>.md` |
+| Source registry entry | `wiki/Source Notes.md` (one entry per ingested source) |
 | Quick thought / idea (future) | `inbox/` |
 | Active project | `projects/<slug>/` |
 | Working note inside a project | `projects/<slug>/notes/YYYY-MM-DD-<topic>.md` |

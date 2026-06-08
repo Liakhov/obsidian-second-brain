@@ -93,12 +93,13 @@ Do NOT add: `type`, `confidence`, `last_verified`, `sources`, `raw`,
 When the user says "ingest raw/X" or "process this source":
 
 1. Read the raw file.
-2. Identify 1-3 topics it touches.
-3. Propose, in plain English, a one-line plan:
+2. Identify the topics it touches (typically 1-3).
+3. Propose, in plain English:
    - Create `wiki/sources/<date>-<slug>.md`.
    - Update or create topic pages (list them by name).
    - Update `wiki/index.md` if a new topic page is added.
-   - "Proceed?"
+
+   Then ask: "Proceed?"
 4. On confirm: write the source page, update topics, update index.
 
 No 7-field plan. No `Source Notes.md` entry. No `log.md` entry. No
@@ -140,7 +141,7 @@ No Python scripts. No formal phases. No bulk-fix gate.
 4. **Prefer growing a topic page over creating a new file.** Splits
    happen only when a page passes ~500 lines AND contains two
    independent sub-topics.
-5. **Plan before write.** One-line plain-English plan. Then "Proceed?".
+5. **Plan before write.** Short plain-English plan, then "Proceed?".
 
 ## Session start
 
@@ -149,7 +150,8 @@ that modify default behavior. Apply silently before responding to the
 first request. Newer entries override older if they conflict. If the
 file is missing or empty, proceed.
 
-Do not announce "I read history.md" — apply transparently.
+Do not announce "I read history.md" — apply transparently. When
+appending a new correction, use the format below.
 
 ## `wiki/history.md` format
 

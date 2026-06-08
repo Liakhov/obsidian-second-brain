@@ -31,8 +31,7 @@ paragraphs, not new files. Agent never edits `raw/`.
 │   ├── topics/         evolving knowledge pages, grow over time
 │   └── patterns/       emergent insights from 3+ sources
 │
-├── projects/           PARA-style active projects
-└── archive/            completed / stale content
+└── projects/           PARA-style active projects
 ```
 
 ## Page types

@@ -30,8 +30,7 @@ Three page types — that's the whole framework.
 │   ├── sources/       one file per ingested source
 │   ├── topics/        evolving knowledge pages
 │   └── patterns/      emergent insights from 3+ sources
-├── projects/          active projects (PARA-style)
-└── archive/           completed / stale content
+└── projects/          active projects (PARA-style)
 ```
 
 Full schema in `AGENTS.md`.

@@ -26,12 +26,12 @@ paragraphs, not new files. Agent never edits `raw/`.
 │
 ├── wiki/
 │   ├── index.md        MOC: topics, patterns, link to sources/
-│   ├── history.md      user corrections (capped 20)
+│   ├── history.md      user corrections that change agent behavior
 │   ├── sources/        one file per ingested source
 │   ├── topics/         evolving knowledge pages, grow over time
 │   └── patterns/       emergent insights from 3+ sources
 │
-└── projects/           PARA-style active projects
+└── projects/           active projects
 ```
 
 ## Page types
@@ -51,7 +51,7 @@ What one source says. Created once, rarely edited.
 Your synthesized position on a subject. Grows over time as new sources
 touch it.
 
-- File name reflects the concept (`llm-wiki-pattern.md`), not the source.
+- File name reflects the concept (e.g. `llm-wiki-pattern.md`), not the source.
 - TL;DR sentence at the top.
 - Sections accrete with new sources — chronological
   (`## Karpathy's original (2026-04)`) or thematic (`## Pros`,
@@ -159,9 +159,7 @@ appending a new correction, use the format below.
 One short paragraph: what changed and why.
 ```
 
-Cap: 20 entries. When the cap is exceeded, move the oldest entry to
-`wiki/history-archive.md` (create the file if missing). The cap applies
-to the live file only; archive grows indefinitely.
+The user refactors and prunes this file manually over time.
 
 ## When to ask vs decide
 

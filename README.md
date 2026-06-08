@@ -41,7 +41,7 @@ Three page types — that's the whole framework.
 │   ├── sources/       one file per ingested source
 │   ├── topics/        evolving knowledge pages
 │   └── patterns/      emergent insights from 3+ sources
-└── projects/          active projects (PARA-style)
+└── projects/          active projects
 ```
 
 Full schema in `AGENTS.md`.
@@ -87,12 +87,6 @@ agent can read them:
 - Settings → Hotkeys → bind "Download attachments for current file"
   (e.g. `Ctrl+Shift+D`).
 - After clipping, press the hotkey.
-
-## Credits
-
-- [Andrej Karpathy — LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-- [Alex McFarland — How Claude maintains my content wiki](https://alexmcfarland.substack.com/p/how-claude-maintains-my-content-wiki)
-- [Tiago Forte — PARA Method](https://fortelabs.com/blog/para/)
 
 ## License
 

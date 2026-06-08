@@ -1,15 +1,9 @@
 # History
 
-Append-only log of corrections from the user. The agent reads this
-file at the start of every session and applies the lessons before
-responding to the first request.
+Append-only log of user corrections that change agent behavior. The
+agent reads this at the start of every session.
 
-> Format and rules: `.agent/references/history-entry-format.md`.
-> Operation spec: `.agent/operations/history-log.md`.
-> Rationale: [[meta/0002-history-md-procedural-memory]].
-
-Cap: latest 20 entries. When the cap is hit, the oldest entry
-moves to `wiki/history-archive.md` automatically.
+See [`AGENTS.md`](../AGENTS.md) for the format and session-start rule.
 
 ## Entries
 

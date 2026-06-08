@@ -1,11 +1,3 @@
 .idea/
 .obsidian/
 .DS_Store
-
-# Python
-__pycache__/
-*.pyc
-
-# lint/export script outputs (.agent/scripts/)
-wiki-graph.json
-wiki-graph-summary.md

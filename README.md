@@ -1,140 +1,88 @@
 # Second brain — Obsidian + Claude Code
 
-Local LLM-powered knowledge base. You curate sources and ask
-questions; the agent (Claude Code, Codex, Cursor, or any other
-that reads `AGENTS.md`) does the bookkeeping — distilling sources
-into wiki pages, cross-linking them, tracking decisions, and
-learning your corrections.
+Personal LLM-powered knowledge base. You curate sources and ask
+questions; the agent (Claude Code, Codex, Cursor, or any that reads
+`AGENTS.md`) does the bookkeeping — distilling sources into wiki pages,
+cross-linking them, learning your corrections.
 
-Built on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f),
-extended with PARA-style projects, ADRs, and procedural memory.
+Inspired by [Karpathy's LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+and [McFarland's content wiki](https://alexmcfarland.substack.com/p/how-claude-maintains-my-content-wiki).
 
 ## Philosophy
 
-> "The LLM writes and maintains the wiki; the human reads and
-> asks questions." — Karpathy
+> The LLM writes and maintains the wiki; the human reads and asks
+> questions.
 
-The wiki compounds over time. Each new source enriches it,
-adds cross-references, and flags conflicts. LLMs do the
-bookkeeping that humans abandon.
+Topic pages grow over time. New sources add paragraphs, not new files.
+Three page types — that's the whole framework.
 
 ## Structure
 
 ```
 .
-├── AGENTS.md          single source of agent rules
+├── AGENTS.md          agent rules (single source of truth)
 ├── CLAUDE.md          symlink → AGENTS.md
 ├── tasks.md           global TODO
-├── inbox/             quick captures (future skill: Telegram, voice)
+├── raw/               immutable source material (Web Clipper sink)
+├── wiki/
+│   ├── index.md       map of content
+│   ├── history.md     user corrections that change agent behavior
+│   ├── sources/       one file per ingested source
+│   ├── topics/        evolving knowledge pages
+│   └── patterns/      emergent insights from 3+ sources
 ├── projects/          active projects (PARA-style)
-├── raw/               immutable source material, flat (Web Clipper sink)
-├── wiki/              distilled knowledge (agent writes, you read)
-│   ├── index.md       map
-│   ├── log.md         operations log
-│   ├── history.md     agent's procedural memory
-│   ├── Source Notes.md  registry of ingested sources from raw/
-│   ├── <topic>/       distilled knowledge clustered by topic
-│   └── meta/          ADRs about the vault itself
-├── archive/           completed projects, stale content
-├── .agent/            machinery
-│   ├── operations/    per-operation specs (lazy-loaded by agent)
-│   ├── references/    page templates
-│   └── scripts/       optional Python utilities (lint, graph)
-└── .obsidian/         Obsidian config
+└── archive/           completed / stale content
 ```
 
-Full map of "what goes where" is in `AGENTS.md` §2.
+Full schema in `AGENTS.md`.
 
 ## Quick start
 
-### 1. Install tools
+1. Install [Obsidian](https://obsidian.md/) and the
+   [Web Clipper](https://obsidian.md/help/web-clipper) extension.
+2. Configure Web Clipper:
+   - **Destination:** this vault.
+   - **Note location:** `raw`.
+   - **File name:** `{{date}}-{{title|safe_name}}`.
+   - **Frontmatter:** `title, source, author, published, tags`.
+3. Open the folder in Obsidian (Open folder as vault).
+4. Run an agent that reads `AGENTS.md`:
+   - [Claude Code](https://claude.com/claude-code)
+   - or Codex, Cursor, opencode, etc.
 
-- [Obsidian](https://obsidian.md/) — desktop app.
-- [Obsidian Web Clipper](https://obsidian.md/help/web-clipper) — browser extension.
-- An agent that reads `AGENTS.md`/`CLAUDE.md`:
-    - [Claude Code](https://claude.com/claude-code)
-    - or Codex, Cursor, opencode, etc.
+First useful commands:
 
-### 2. Clone and open
+- `ingest raw/<file>` — distill a source into wiki pages.
+- `what do I know about X?` — query the wiki with citations.
+- `remember this as a correction` — append to `wiki/history.md`.
+- `check vault health` — ad-hoc lint pass.
 
-```bash
-git clone <this-repo> my-vault
-cd my-vault
-```
+## Day-to-day
 
-Open the folder in Obsidian (Open folder as vault).
+| When | What |
+|---|---|
+| Reading something interesting | Web Clipper → `raw/` |
+| Once a day or week | "ingest new sources" |
+| Anytime | "what do I know about X" |
+| When the agent makes the same mistake twice | "remember this as a correction" |
+| Once a month | "check vault health" |
 
-### 3. Configure Web Clipper
+## Optional: local images
 
-In the browser extension settings (template / behavior):
+Web Clipper stores image URLs by default. To make images local so the
+agent can read them:
 
-- **Destination**: this vault.
-- **Note location**: `raw`.
-- **File name**: `{{date}}-{{title|safe_name}}`.
-- **Frontmatter template** (minimum):
-  ```
-  title, source, author, published, created, tags: [clippings]
-  ```
-
-### 4. Start the agent
-
-From the repo root:
-
-```bash
-claude        # or: codex / cursor / opencode
-```
-
-The agent reads `AGENTS.md` on session start and discovers the
-operations table. First useful commands:
-
-- `"Ingest raw/<file>"` — distill a source into wiki pages.
-- `"What do I know about X?"` — query with citations.
-- `"Lint vault"` — run health check.
-- `"Document this decision as an ADR"` — record a vault or
-  project-level decision.
-
-## Day-to-day workflow
-
-| When | What | How |
-|---|---|---|
-| Reading something interesting | Clip it | Web Clipper → `raw/` |
-| Once a day or week | Ingest new sources | "ingest all new sources" |
-| Anytime | Ask the wiki | "what do I know about X" |
-| Once a month | Vault health | "lint vault" |
-| When making a non-trivial decision | Record it | "create ADR for X" |
-| When you correct the agent twice | Lesson learned | "remember this as a lesson" |
-
-## Operations the agent does
-
-5 operations, fully specified in `.agent/operations/`:
-
-- **INGEST** — compile a `raw/` source into wiki pages.
-- **QUERY** — search wiki, answer with citations, optionally
-  archive synthesis answers.
-- **LINT** — Python-script-based deterministic checks plus
-  agent-judgment heuristic checks.
-- **ADR-CREATE** — record a decision at vault or project level
-  with proper numbering and supersession links.
-- **HISTORY-LOG** — append corrections to procedural memory.
-
-## Optional: download images locally for clipped pages
-
-By default, Web Clipper stores images as remote URLs. To make
-images available offline (and for the agent to read them
-directly):
-
-- Settings → Files and links → Attachment folder path:
+- Obsidian → Settings → Files and links → Attachment folder:
   `raw/assets/`.
 - Settings → Hotkeys → bind "Download attachments for current file"
   (e.g. `Ctrl+Shift+D`).
-- After clipping an article, press the hotkey → images saved
-  locally → agent can read them.
+- After clipping, press the hotkey.
 
-## Credits and inspiration
+## Credits
 
 - [Andrej Karpathy — LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-- [Astro-Han — karpathy-llm-wiki Agent Skill](https://github.com/Astro-Han/karpathy-llm-wiki)
-- [Tiago Forte — The PARA Method](https://fortelabs.com/blog/para/)
+- [Alex McFarland — How Claude maintains my content wiki](https://alexmcfarland.substack.com/p/how-claude-maintains-my-content-wiki)
+- [Tiago Forte — PARA Method](https://fortelabs.com/blog/para/)
 
 ## License
 

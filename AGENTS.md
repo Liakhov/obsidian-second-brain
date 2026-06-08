@@ -1,261 +1,202 @@
 # AGENTS.md
 
-Schema file for any LLM agent that maintains this vault. Single source
-of truth for behavior. `CLAUDE.md` is a symlink to this file so Claude
-Code and Codex/Cursor/opencode all see the same rules.
+Schema for any LLM agent that maintains this vault. Single source of
+truth. `CLAUDE.md` is a symlink → `AGENTS.md`.
 
-## 1. Purpose
+## Purpose
 
-This repository is a personal second brain built on Karpathy's LLM Wiki
-pattern, extended with Projects (PARA-style) and a procedural memory
-layer.
+Personal second brain on Karpathy's LLM Wiki pattern, simplified to the
+3-page model from McFarland's content wiki. User curates sources; agent
+distills them into wiki pages, cross-links, and remembers corrections.
 
-Roles:
-- **User** picks sources, sets direction, asks questions, makes decisions.
-- **Agent** does the bookkeeping: reads sources, distills them into
-  wiki pages, maintains cross-references, flags conflicts, keeps the
-  log, applies lessons from past corrections.
+The wiki compounds. Topic pages grow over time — new sources add
+paragraphs, not new files. Agent never edits `raw/`.
 
-The wiki compounds over time. Projects organize active work.
-The agent never edits `raw/`.
-
-## 2. Vault structure
+## Vault structure
 
 ```
 .
-├── AGENTS.md               this file, single source of rules
-├── CLAUDE.md               symlink → AGENTS.md
-├── README.md               human-facing onboarding
-├── LICENSE
-├── .gitignore
+├── AGENTS.md           rules (this file)
+├── CLAUDE.md           symlink → AGENTS.md
+├── README.md           human onboarding
+├── tasks.md            global TODO
 │
-├── tasks.md                global TODO (outside projects)
+├── raw/                immutable source material (Web Clipper sink, flat)
+│   └── assets/
 │
-├── inbox/                  fast captures: thoughts, ideas (future skill)
+├── wiki/
+│   ├── index.md        MOC: topics, patterns, link to sources/
+│   ├── history.md      user corrections (capped 20)
+│   ├── sources/        one file per ingested source
+│   ├── topics/         evolving knowledge pages, grow over time
+│   └── patterns/       emergent insights from 3+ sources
 │
-├── projects/               active projects, structure in §4
-│   └── <slug>/
-│
-├── raw/                    immutable source material
-│   ├── YYYY-MM-DD-slug.md
-│   └── assets/             image attachments
-│
-├── wiki/                   distilled knowledge
-│   ├── index.md            map of the wiki
-│   ├── log.md              append-only operations log (wiki only)
-│   ├── history.md          agent's procedural memory (corrections)
-│   ├── Source Notes.md     registry of ingested sources from raw/
-│   ├── <topic>/            distilled knowledge clustered by topic
-│   └── meta/               ADRs about the vault itself
-│
-├── archive/                completed / stale content
-│   ├── projects/
-│   ├── inbox/
-│   └── raw/
-│
-├── .agent/                 machinery — not content
-│   ├── operations/         per-operation specs (lazy-loaded)
-│   ├── references/         templates the agent reads on demand
-│   └── scripts/            optional Python utilities
-│
-└── .obsidian/              Obsidian config
+├── projects/           PARA-style active projects
+└── archive/            completed / stale content
 ```
 
-### Where things go
+## Page types
 
-| What | Path |
-|---|---|
-| Web-clip article | `raw/YYYY-MM-DD-slug.md` |
-| Image attachment | `raw/assets/<image>.<ext>` |
-| Distilled knowledge from a source | `wiki/<topic>/<article>.md` |
-| Source registry entry | `wiki/Source Notes.md` (one entry per ingested source) |
-| Quick thought / idea (future) | `inbox/` |
-| Active project | `projects/<slug>/` |
-| Working note inside a project | `projects/<slug>/notes/YYYY-MM-DD-<topic>.md` |
-| Global task | `tasks.md` |
-| Project task | `projects/<slug>/tasks.md` |
-| Decision about the vault | `wiki/meta/NNNN-<slug>.md` |
-| Decision inside a project | `projects/<slug>/decisions/NNNN-<slug>.md` |
-| Completed project | `archive/projects/<slug>/` |
+### `wiki/sources/<date>-<slug>.md`
 
-## 3. Hard rules — never violate
+What one source says. Created once, rarely edited.
 
-### 3.1. `raw/` is immutable
-Never edit, rename, normalize, or delete files in `raw/` unless the
-user explicitly asks. `raw/` is the source of truth. Everything else
-can be rebuilt from it. Any "fix" to raw content happens in `wiki/`
-through derivative pages and notes.
+- File name: `YYYY-MM-DD-<short-slug>.md`, kebab-case. Date is
+  publication date if known, else clip date.
+- Sections: `## Argument`, `## Examples`, `## Key takeaway`.
+- 10-25 lines typical. Anything longer probably belongs in a topic.
+- Links back to the `raw/` file in the header.
 
-### 3.2. Never overwrite knowledge silently
-If a new source contradicts an existing page, do NOT overwrite.
-Create a conflict note, attribute both sources, mark which is newer
-or more authoritative. Supersession is explicit.
+### `wiki/topics/<slug>.md`
 
-### 3.3. Atomicity over volume
-One page = one idea / one entity. Prefer many small linked pages
-over one dump. This is the Zettelkasten principle and it makes
-graph view actually useful.
+Your synthesized position on a subject. Grows over time as new sources
+touch it.
 
-### 3.4. Always cite sources
-Non-trivial claims must link to the `raw/` file and, if present,
-the source URL from frontmatter. If confidence is low, say so —
-don't hide uncertainty.
+- File name reflects the concept (`llm-wiki-pattern.md`), not the source.
+- TL;DR sentence at the top.
+- Sections accrete with new sources — chronological
+  (`## Karpathy's original (2026-04)`) or thematic (`## Pros`,
+  `## Pitfalls`, `## My take`).
+- Update the `updated:` frontmatter on every meaningful edit.
+- Split only when a page passes ~500 lines AND clearly contains two
+  independent sub-topics. Default: keep growing.
 
-### 3.5. Plan before action
-Before any file write, show a plan. The plan must include
-operation-specific required fields (defined in the operation's
-spec file). If your plan doesn't include those fields, you have
-not read the spec — stop and read it.
+### `wiki/patterns/<slug>.md`
 
-Exception: pure reads (most QUERY calls) need no plan.
+Insights observed across 3+ sources. Rare. Typically <10 in the whole
+vault.
 
-## 4. Project structure
+- Created only when a pattern truly recurs across multiple sources.
+- Structure: thesis + evidence list (links to source files) +
+  implications.
+- Do NOT create a pattern from a single source.
 
-When the user creates a project manually (or asks the agent to
-write inside one), the structure is:
+## Frontmatter
+
+All three page types use the same minimal block:
+
+```yaml
+---
+title: <title>
+updated: YYYY-MM-DD
+tags: [tag1, tag2]
+---
+```
+
+Optional, add only when useful: `url`, `author`, `created`.
+
+Do NOT add: `type`, `confidence`, `last_verified`, `sources`, `raw`,
+`relationships`. These were process noise.
+
+## INGEST flow
+
+When the user says "ingest raw/X" or "process this source":
+
+1. Read the raw file.
+2. Identify 1-3 topics it touches.
+3. Propose, in plain English, a one-line plan:
+   - Create `wiki/sources/<date>-<slug>.md`.
+   - Update or create topic pages (list them by name).
+   - Update `wiki/index.md` if a new topic page is added.
+   - "Proceed?"
+4. On confirm: write the source page, update topics, update index.
+
+No 7-field plan. No `Source Notes.md` entry. No `log.md` entry. No
+cascade-update of unrelated pages. No `confidence` / `last_verified`
+bookkeeping.
+
+## QUERY
+
+When the user asks "what do I know about X":
+
+1. Read `wiki/index.md`, find relevant topic page(s).
+2. Read those topics. Prefer wiki content over training knowledge.
+3. Answer with citations as plain markdown links to topic and source
+   files.
+4. Do NOT write files. If the answer is worth keeping, the user will
+   ask to add it to the relevant topic page.
+
+## Ad-hoc lint
+
+When the user asks "check vault health":
+
+- Scan for broken `[[wikilinks]]`, orphan pages, topic pages with stale
+  `updated` dates.
+- Fix only what's mechanical and obvious (e.g. a wikilink with exactly
+  one matching alternative).
+- Report the rest; let the user decide.
+
+No Python scripts. No formal phases. No bulk-fix gate.
+
+## Hard rules
+
+1. **`raw/` is immutable.** Never edit, rename, or delete files there
+   unless the user explicitly asks.
+2. **Cite sources.** Non-trivial claims on a topic page link to the
+   source file they came from.
+3. **Don't overwrite silently.** If a new source contradicts an existing
+   topic page, add a caveat paragraph naming both sources — don't pick
+   a winner without saying so.
+4. **Prefer growing a topic page over creating a new file.** Splits
+   happen only when a page passes ~500 lines AND contains two
+   independent sub-topics.
+5. **Plan before write.** One-line plain-English plan. Then "Proceed?".
+
+## Session start
+
+Read `wiki/history.md` first. Treat its entries as standing instructions
+that modify default behavior. Apply silently before responding to the
+first request. Newer entries override older if they conflict. If the
+file is missing or empty, proceed.
+
+Do not announce "I read history.md" — apply transparently.
+
+## `wiki/history.md` format
+
+```markdown
+## [YYYY-MM-DD] correction
+One short paragraph: what changed and why.
+```
+
+Cap: 20 entries. When the cap is exceeded, move the oldest entry to
+`wiki/history-archive.md` (create the file if missing). The cap applies
+to the live file only; archive grows indefinitely.
+
+## When to ask vs decide
+
+Ask when:
+- A source clearly spans multiple new topics — confirm primary placement.
+- About to rename or move >5 files.
+- Slug for a new page is ambiguous.
+
+Don't ask when:
+- The choice is mechanical (today's date, kebab-casing).
+- Convention is already established.
+
+## Tone
+
+- Concise. No filler. No "as an AI..." preambles.
+- Use `[[wikilinks]]` between wiki pages.
+- Link to `raw/` files with relative markdown links from the page.
+- Default language: English. Quotes from non-English sources stay in
+  the original; agent can paraphrase in English.
+- Don't use emoji in vault content unless the user does.
+
+## Projects
+
+`projects/<slug>/` structure:
 
 ```
 projects/<slug>/
-├── README.md               purpose, status, links
-├── tasks.md                project TODO
-├── log.md                  project's own append-only log
-├── notes/                  YYYY-MM-DD-<topic>.md, flat
-├── decisions/              NNNN-<slug>.md (project ADRs)
-├── data/                   CSV, JSON, dumps
-└── assets/                 diagrams, screenshots
+├── README.md       purpose, status, links
+├── tasks.md        project TODO
+├── notes/          flat, YYYY-MM-DD-<topic>.md
+├── data/           CSV, JSON, dumps
+└── assets/         diagrams, screenshots
 ```
 
-Rules:
-- `notes/` is flat (no subfolders) until the user asks to split.
-- `notes/` file naming: `YYYY-MM-DD-<topic>.md` for new working notes;
-  stable files (`requirements.md`, `architecture.md`) may drop the date.
-- `decisions/` follows the same numbered ADR format as `wiki/meta/`.
-- Each project has its own `log.md` for project-scoped operations.
-  Wiki-level operations log to `wiki/log.md`.
+Project decision history lives in `notes/`. No separate ADR system, no
+project log file.
 
-If a project is missing a folder the user expects, propose creating
-it before writing — don't silently scatter files.
-
-## 5. Tone and format
-
-- Write concisely. No filler. No "as an AI..." preambles.
-- Use Obsidian `[[wikilinks]]` between wiki pages.
-- Link to `raw/` with relative markdown links from the page.
-- Default language: English. Quotes from non-English sources stay
-  in the original; agent can paraphrase in English.
-- Don't use emoji in vault content unless the user does.
-
-### Page-name conventions
-- Wiki pages: kebab-case file names (`llm-wiki-pattern.md`).
-- Project slugs: kebab-case, no articles (`my-app` not `the-my-app`).
-- ADR files: `NNNN-<slug>.md`, four-digit zero-padded number.
-- Notes inside projects: `YYYY-MM-DD-<topic>.md`.
-- Raw clips: `YYYY-MM-DD-<source-slug>.md`.
-
-## 6. Lifecycle: confidence, freshness, supersession, conflicts
-
-Knowledge is not equally reliable. Mark it.
-
-### Confidence
-Frontmatter `confidence: high | medium | low`.
-- **high** — multiple recent sources, verified.
-- **medium** — single or older source, some uncertainty.
-- **low** — speculative, contradictory, needs work.
-
-Confidence is optional but encouraged for non-trivial claims.
-
-### Freshness
-Frontmatter `last_verified: YYYY-MM-DD`. For fast-moving topics
-(AI, products) the staleness threshold is 90 days. For stable
-concepts (Zettelkasten) it's 365+.
-
-### Supersession
-When a new source updates an old claim:
-1. Do NOT delete the old page.
-2. Add `superseded by [[NNNN-<new-slug>]]` to the old page's frontmatter.
-3. Add `supersedes: [[NNNN-<old-slug>]]` to the new page.
-
-### Conflicts
-When a new source contradicts an existing page:
-1. Add a `## Conflict` block to the affected page.
-2. List both versions with attribution and dates.
-3. Indicate which source is newer or more authoritative, if known.
-4. Don't pick a winner silently.
-
-### Typed relationships (optional, as base grows)
-- `implements` — concrete realization of an abstract concept
-- `supports` — evidence backing a claim
-- `contradicts` — conflicts with
-- `extends` — builds on
-- `used_by` — practical application
-- `supersedes` — replaces an older page
-
-## 7. Session start — read history
-
-**First action in every new session:** read `wiki/history.md`.
-It contains corrections from the user that change default behavior.
-Apply them *before* responding to the first request.
-
-Older entries weigh less than newer. If two conflict, follow the
-newer. The user should supersede explicitly via a new entry.
-
-Don't announce "I read history.md" — apply transparently.
-
-If `wiki/history.md` is missing or empty, proceed.
-
-## 8. Defaults — when to ask
-
-Ask the user when:
-- A source falls outside current topics — which topic-subdir?
-- There are 2-3 valid structural choices — let the user pick.
-- About to rename or bulk-move — always confirm.
-- Slug for a new page is ambiguous.
-- Auto-fix would touch >10 files at once.
-
-Don't ask when:
-- Choice is mechanical (next ADR number, today's date, kebab-casing
-  a known phrase).
-- Convention is already established in this vault (lint can detect it).
-- User just told you, asking again is rude.
-
-## 9. Operations — routing only
-
-Each operation below has its own spec in `.agent/operations/<name>.md`.
-
-**You MUST read the full spec file before performing the operation.**
-The one-liner here is for routing, not for execution. Failing to read
-the spec is a violation of vault rules.
-
-| Operation | Triggers | Spec |
-|---|---|---|
-| INGEST | "ingest", "process this source", "add this article to wiki" | `.agent/operations/ingest.md` |
-| QUERY | "what do I know about", "summarize", "compare X and Y" | `.agent/operations/query.md` |
-| LINT | "lint", "lint wiki", "check vault health" | `.agent/operations/lint.md` |
-| ADR-CREATE | "create ADR", "document this decision", "log this decision" | `.agent/operations/adr-create.md` |
-| HISTORY-LOG | "remember this", "save as lesson", or implicit (twice-corrected) | `.agent/operations/history-log.md` |
-
-### Operations the agent does NOT do
-
-Some things are explicitly user's job, kept simple by design:
-- **Creating projects.** User runs `mkdir projects/<slug>` and
-  creates the skeleton manually or by copying a template.
-- **Archiving projects.** User runs `mv projects/<slug> archive/projects/`.
-  Inbound references stay broken until next LINT — that's fine.
-- **Adding tasks.** User edits `tasks.md` or `projects/<slug>/tasks.md`
-  directly.
-
-If the user asks for one of these, do it — but don't volunteer.
-
-## 10. Behavior defaults
-
-- Better to flag uncertainty than silently rewrite.
-- Better to propose a new page than to blur an existing one.
-- Better a smaller atomic page than a sprawling longread.
-- When unclear on classification or structure — ask, don't guess silently.
-
-## Related pages
-
-- [[index]] — map of the wiki
-- [[log]] — wiki operations log
-- [[history]] — agent's procedural memory
-- [[meta/0001-agents-as-single-source]] — why this file is the only schema
+Creating and archiving projects is the user's job (`mkdir`, `mv`). Agent
+does not volunteer to scaffold projects unless asked.

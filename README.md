@@ -16,6 +16,16 @@ and [McFarland's content wiki](https://alexmcfarland.substack.com/p/how-claude-m
 Topic pages grow over time. New sources add paragraphs, not new files.
 Three page types — that's the whole framework.
 
+## Page types
+
+- **`wiki/sources/`** — one file per ingested source. A short summary
+  of what it claims, with examples and the key takeaway. Created
+  once, rarely edited.
+- **`wiki/topics/`** — your synthesized position on a subject. Grows
+  as new sources touch it; never splits until it has to.
+- **`wiki/patterns/`** — emergent insights that recur across 3+
+  sources. Rare — typically under ten in the whole vault.
+
 ## Structure
 
 ```
@@ -24,8 +34,9 @@ Three page types — that's the whole framework.
 ├── CLAUDE.md          symlink → AGENTS.md
 ├── tasks.md           global TODO
 ├── raw/               immutable source material (Web Clipper sink)
+│   └── assets/        local image attachments
 ├── wiki/
-│   ├── index.md       map of content
+│   ├── index.md       map of content (MOC)
 │   ├── history.md     user corrections that change agent behavior
 │   ├── sources/       one file per ingested source
 │   ├── topics/        evolving knowledge pages

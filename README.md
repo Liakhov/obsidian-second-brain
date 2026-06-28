@@ -32,6 +32,7 @@ Three page types — that's the whole framework.
 .
 ├── AGENTS.md          agent rules (single source of truth)
 ├── CLAUDE.md          symlink → AGENTS.md
+├── README.md          human onboarding
 ├── tasks.md           global TODO
 ├── raw/               immutable source material (Web Clipper sink)
 │   └── assets/        local image attachments
@@ -41,7 +42,11 @@ Three page types — that's the whole framework.
 │   ├── sources/       one file per ingested source
 │   ├── topics/        evolving knowledge pages
 │   └── patterns/      emergent insights from 3+ sources
-└── projects/          active projects
+├── projects/          project docs (code lives in its own repo)
+│   ├── index.md       catalog of all projects
+│   └── <slug>/        README, tasks, notes/, data/, assets/
+└── skills/
+    └── second-brain/  cross-repo bridge skill (symlinked to agents)
 ```
 
 Full schema in `AGENTS.md`.

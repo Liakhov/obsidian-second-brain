@@ -31,7 +31,9 @@ paragraphs, not new files. Agent never edits `raw/`.
 │   ├── topics/         evolving knowledge pages, grow over time
 │   └── patterns/       emergent insights from 3+ sources
 │
-└── projects/           active projects
+└── projects/           project docs
+    ├── index.md        catalog of all projects
+    └── <slug>/         README, tasks, notes/, data/, assets/
 ```
 
 ## Page types
@@ -183,19 +185,44 @@ Don't ask when:
 
 ## Projects
 
+Projects document work whose **code lives in its own repo elsewhere**;
+the vault holds only the documentation, never the source.
+
+`projects/index.md` is the catalog — a MOC listing every project with
+status, one-line description, and repo link. Keep it in sync when you
+create or meaningfully change a project.
+
 `projects/<slug>/` structure:
 
 ```
 projects/<slug>/
-├── README.md       purpose, status, links
-├── tasks.md        project TODO
-├── notes/          flat, YYYY-MM-DD-<topic>.md
+├── README.md       purpose, status, what's done, repo + [[topic]] links
+├── tasks.md        improvements / backlog
+├── notes/          flat, YYYY-MM-DD-<topic>.md (decisions, learnings)
 ├── data/           CSV, JSON, dumps
 └── assets/         diagrams, screenshots
 ```
 
-Project decision history lives in `notes/`. No separate ADR system, no
-project log file.
+`README.md` sections: `## Status`, `## Done`, `## Notes`. Frontmatter may
+add `status` and `repo`. The improvements/backlog lives in `tasks.md` (a
+checkbox list), not in README. Decision history lives in `notes/` — no
+separate ADR system, no project log file.
+
+**Bidirectional links.** A project README links the topics it applies
+(`Applies [[loop-engineering]]`); a topic may carry an `## Applied in`
+section linking back to projects. This makes the knowledge base
+actionable — "what do I know about X, and where did I use it?".
+
+**Statistics** (commits, activity, LOC) are deliberately out of scope
+for now. When wanted, they arrive via an MCP server, not by scraping.
 
 Creating and archiving projects is the user's job (`mkdir`, `mv`). Agent
 does not volunteer to scaffold projects unless asked.
+
+### Editing projects from another repo
+
+Project documentation is reachable from inside a project's own repo via
+the `second-brain` skill (`skills/second-brain/`), symlinked into
+`~/.claude/skills` and `~/.agents/skills`. That skill points back to this
+file for the schema — it does not restate the rules. When an agent in a
+foreign repo records project progress, it follows the schema above.

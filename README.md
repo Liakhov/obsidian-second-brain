@@ -77,6 +77,36 @@ First useful commands:
 | When the agent makes the same mistake twice | "remember this as a correction" |
 | Once a month | "check vault health" |
 
+## Projects + the cross-repo skill
+
+Projects are documented under `projects/<slug>/` (purpose, what's done,
+backlog, notes). Their source code lives in its own repo elsewhere — the
+vault holds only the documentation. See `AGENTS.md` for the page schema.
+
+To read and update that documentation from **inside a project's own
+repo** (where the vault isn't otherwise visible), install the
+`second-brain` skill. It lives in `skills/second-brain/` and is shared
+with both Claude Code and Codex via symlinks — one canonical file,
+versioned with the vault.
+
+One-time setup per machine, run from the vault root:
+
+```bash
+VAULT="$(pwd)"
+mkdir -p ~/.claude/skills ~/.agents/skills
+ln -sfn "$VAULT/skills/second-brain" ~/.claude/skills/second-brain   # Claude Code
+ln -sfn "$VAULT/skills/second-brain" ~/.agents/skills/second-brain   # Codex
+```
+
+The skill resolves the vault path from the symlink at run time, so no
+absolute path is hard-coded. Editing `skills/second-brain/SKILL.md`
+updates both agents at once. On a new machine: clone the vault, re-run
+the commands above.
+
+Writing into the vault from another repo triggers a one-time permission
+prompt (path outside the working directory) — allowlist the vault path
+in each agent's user settings once.
+
 ## Optional: local images
 
 Web Clipper stores image URLs by default. To make images local so the
